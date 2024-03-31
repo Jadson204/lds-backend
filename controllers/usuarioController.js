@@ -20,7 +20,22 @@ async function getUser(req, res) {
     }
 }
 
+async function deleteUser(req, res) {
+    try {
+        const result = await usuarioService.deleteUser(req.params.email); // Chama o método deleteUser do serviço
+        if (result.success) { // Verifica se a exclusão foi bem-sucedida
+            res.status(200).json({ message: "Usuário deletado com sucesso" });
+        } else {
+            res.status(404).json({ error: 'Usuário não encontrado' }); // Se o usuário não existir
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+}
+
 module.exports = {
     createUser,
-    getUser
+    getUser,
+    deleteUser
 }

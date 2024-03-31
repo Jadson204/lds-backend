@@ -2,8 +2,8 @@ const pool = require('../config/database');
 
 async function createUser(dadosUsuario) {
     try {
-        const query = 'INSERT INTO usuarios (nome, email, senha) VALUES($1, $2, $3)';
-        const values = [dadosUsuario.nome, dadosUsuario.email, dadosUsuario.senha];
+        const query = 'INSERT INTO users (username, email, password, favoriteActivity) VALUES($1, $2, $3, $4)';
+        const values = [dadosUsuario.username, dadosUsuario.email, dadosUsuario.password, dadosUsuario.favoriteActivity];
         const result = await pool.query(query, values);
 
         console.log('Usuário cadastrado com sucesso!');
@@ -13,10 +13,10 @@ async function createUser(dadosUsuario) {
     }
 }
 
-async function getUser(id) {
+async function getUser(email) {
     try {
-        const query = 'SELECT (nome, email) FROM usuarios WHERE id = $1';
-        const values = [id];
+        const query = 'SELECT username, favoriteActivity FROM users WHERE email = $1';
+        const values = [email];
 
         const result = await pool.query(query, values);
 
@@ -24,14 +24,29 @@ async function getUser(id) {
             throw new Error('Usuário não encontrado');
         }
 
-        const { nome, email } = result.rows[0];
-        return { nome, email };
+        const { username, favoritectivity } = result.rows[0];
+        return { username, favoritectivity };
     } catch (error) {
-        throw new Error('Erro ao buscar usuário por id: ' + error.message);
+        throw new Error('Erro ao buscar usuário por email: ' + error.message);
+    }
+}
+
+async function deleteUser(email) {
+    try {
+        const query = 'DELETE FROM users WHERE email = $1';
+        const values = [email];
+        const result = await pool.query(query, values);
+
+        console.log('Usuário deletado com sucesso');
+        return { success: true, message: 'Usuário deletado com sucesso' };
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        throw new Error('Erro ao excluir usuário: ' + error.message);
     }
 }
 
 module.exports = {
     createUser,
-    getUser
+    getUser,
+    deleteUser
 };
