@@ -1,14 +1,17 @@
 // Importa o módulo express, que é um framework para aplicativos web Node.js
 const express = require('express');
+const bodyParser = require('body-parser');
 
 // Importa as rotas relacionadas aos usuários
-const usuarioRoutes = require('./routes/usuarioRoutes');
+const usuarioRoutes = require('./src/routes/usuarioRoutes');
 
 // Cria uma instância do aplicativo Express
 const app = express();
 
 // Adiciona um middleware para analisar o corpo das requisições como JSON
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configura as rotas da aplicação
 // Todas as requisições para '/api' serão tratadas pelas rotas definidas em usuarioRoutes
