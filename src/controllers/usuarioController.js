@@ -55,10 +55,36 @@ async function loginUserHandler(req, res) {
     }
 }
 
+async function updateUserHandler(req, res) {
+    try {
+        const userEmail = req.params.email;
+        const updatedUserData = req.body;
+
+        // Verifica se o email está presente no corpo da requisição
+        if (!Object.keys(updatedUserData).length) {
+            return res.status(400).json({ error: 'Nenhum dado fornecido para atualização' });
+        }
+
+        // Verifica se o email está sendo alterado nos dados fornecidos
+        if ('email' in updatedUserData) {
+            return res.status(400).json({ error: 'O email não pode ser alterado' });
+        }
+
+        // Atualiza as informações do usuário no banco de dados
+        const updatedUser = await usuarioService.updateUser(userEmail, updatedUserData);
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error.message);
+        res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
+}
+
 
 module.exports = {
     createUser,
     getUser,
     deleteUser,
-    loginUserHandler
+    loginUserHandler,
+    updateUserHandler
 }

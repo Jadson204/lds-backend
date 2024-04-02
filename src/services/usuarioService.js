@@ -93,10 +93,53 @@ async function loginUser(email, password) {
     }
 }
 
+async function updateUser(userEmail, updatedUserData) {
+    try {
+        // Verificar se o email existe no banco de dados
+        const checkEmailQuery = 'SELECT * FROM users WHERE email = $1';
+        const checkEmailValues = [userEmail];
+        const user = await pool.query(checkEmailQuery, checkEmailValues);
+
+        if (user.rows.length === 0) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        // Montar a query para atualização dos dados do usuário
+        let updateQuery = 'UPDATE users SET ';
+        let updateValues = [];
+        let valueIndex = 1;
+
+        // Iterar sobre os dados do usuário fornecidos na requisição
+        for (const key in updatedUserData) {
+            // Certifique-se de que o email não será atualizado
+            if (key !== 'email') {
+                updateQuery += `${key} = $${valueIndex}, `;
+                updateValues.push(updatedUserData[key]);
+                valueIndex++;
+            }
+        }
+
+        // Remover a vírgula extra no final da query
+        updateQuery = updateQuery.slice(0, -2);
+
+        // Adicionar a condição WHERE para atualizar apenas o usuário com o email fornecido
+        updateQuery += ` WHERE email = $${valueIndex}`;
+        updateValues.push(userEmail);
+
+        // Executar a query de atualização no banco de dados
+        await pool.query(updateQuery, updateValues);
+
+        return { message: 'Usuário atualizado com sucesso' };
+    } catch (error) {
+        throw new Error('Erro ao atualizar usuário: ' + error.message);
+    }
+}
+
 module.exports = {
     createUser,
     getUser,
     deleteUser,
     verifyUserPassword,
-    loginUser
+    loginUser,
+    updateUser
 };
