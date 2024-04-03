@@ -6,7 +6,7 @@ async function createUser(dadosUsuario) {
         const hashedPassword = await bcrypt.hash(dadosUsuario.password, 10);
 
         const query = 'INSERT INTO users (username, email, password, favoriteActivity) VALUES($1, $2, $3, $4)';
-        const values = [dadosUsuario.username, dadosUsuario.email, hashedPassword, dadosUsuario.favoriteActivity];
+        const values = [dadosUsuario.username, dadosUsuario.email, hashedPassword, dadosUsuario.favoriteactivity];
         const result = await pool.query(query, values);
 
         console.log('Usuário cadastrado com sucesso!');
@@ -18,7 +18,7 @@ async function createUser(dadosUsuario) {
 
 async function getUser(email) {
     try {
-        const query = 'SELECT username, favoriteActivity FROM users WHERE email = $1';
+        const query = 'SELECT username, favoriteactivity FROM users WHERE email = $1';
         const values = [email];
 
         const result = await pool.query(query, values);
