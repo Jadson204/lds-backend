@@ -12,7 +12,7 @@ async function createUser(req, res) {
 
 async function getUser(req, res) {
     try {
-        const usuario = await usuarioService.getUser(req.params.id);
+        const usuario = await usuarioService.getUser(req.params.email);
         res.status(200).json(usuario);
     } catch (error) {
         console.error('Usuário não encontrado:', error);
