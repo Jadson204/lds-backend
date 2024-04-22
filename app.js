@@ -5,6 +5,7 @@ const cors = require('cors');
 
 // Importa as rotas relacionadas aos usuários
 const usuarioRoutes = require('./src/routes/usuarioRoutes');
+const eventoRoutes = require('./src/routes/eventoRoutes');
 
 // Cria uma instância do aplicativo Express
 const app = express();
@@ -20,6 +21,7 @@ app.use(cors());
 // Configura as rotas da aplicação
 // Todas as requisições para '/api' serão tratadas pelas rotas definidas em usuarioRoutes
 app.use('/api', usuarioRoutes);
+app.use('/api', eventoRoutes);
 
 // Define a porta em que o servidor irá escutar
 const PORT = process.env.PORT || 3000;
