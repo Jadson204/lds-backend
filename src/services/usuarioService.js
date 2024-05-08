@@ -1,12 +1,12 @@
 const pool = require('../config/database');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 
 async function createUser(dadosUsuario) {
     try {
-        const hashedPassword = await bcrypt.hash(dadosUsuario.password, 10);
+        // const hashedPassword = await bcrypt.hash(dadosUsuario.password, 10);
 
         const query = 'INSERT INTO users (username, email, password, favoriteActivity) VALUES($1, $2, $3, $4)';
-        const values = [dadosUsuario.username, dadosUsuario.email, hashedPassword, dadosUsuario.favoriteactivity];
+        const values = [dadosUsuario.username, dadosUsuario.email, dadosUsuario.password, dadosUsuario.favoriteactivity];
         const result = await pool.query(query, values);
 
         console.log('Usuário cadastrado com sucesso!');
@@ -18,7 +18,7 @@ async function createUser(dadosUsuario) {
 
 async function getUser(email) {
     try {
-        const query = 'SELECT username, favoriteactivity FROM users WHERE email = $1';
+        const query = 'SELECT username, favoriteactivity, password FROM users WHERE email = $1';
         const values = [email];
 
         const result = await pool.query(query, values);
@@ -79,9 +79,7 @@ async function loginUser(email, password) {
 
         const user = result.rows[0];
 
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
+        if (password !== user.password) {
             throw new Error('Email ou senha incorretos');
         }
 
