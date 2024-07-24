@@ -132,11 +132,28 @@ async function updateUser(userEmail, updatedUserData) {
     }
 }
 
+async function updateProfileImage(email, imageBuffer) {
+    try {
+        const query = 'UPDATE users SET profile_image = $1 WHERE email = $2 RETURNING *';
+        const values = [imageBuffer, email];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        return result.rows[0];
+    } catch (error) {
+        throw new Error('Erro ao atualizar imagem de perfil: ' + error.message);
+    }
+}
+
 module.exports = {
     createUser,
     getUser,
     deleteUser,
     verifyUserPassword,
     loginUser,
-    updateUser
+    updateUser,
+    updateProfileImage
 };

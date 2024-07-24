@@ -79,6 +79,22 @@ async function updateUserHandler(req, res) {
         res.status(500).json({ error: 'Erro ao atualizar usuário' });
     }
 }
+async function uploadProfileImage(req, res) {
+    try {
+        const email = req.params.email;
+        const file = req.file;
+
+        if (!file) {
+            return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+        }
+
+        const updatedUser = await usuarioService.updateProfileImage(email, file.buffer);
+        res.status(200).json({ message: 'Imagem de perfil atualizada com sucesso', user: updatedUser });
+    } catch (error) {
+        console.error('Erro ao fazer upload da imagem de perfil:', error.message);
+        res.status(500).json({ error: 'Erro ao fazer upload da imagem de perfil' });
+    }
+}
 
 
 module.exports = {
@@ -86,5 +102,6 @@ module.exports = {
     getUser,
     deleteUser,
     loginUserHandler,
-    updateUserHandler
+    updateUserHandler,
+    uploadProfileImage
 }
